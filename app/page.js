@@ -291,7 +291,7 @@ export default function Page() {
         <div className="hero">
           <div className="hero-content">
             <span className="eyebrow">KarPas • BWolfOffTheRoad • 3DCalc</span>
-            <h1>Kalkulator wyceny breloczka 3D</h1>
+            <h1>Kalkulator wyceny druku 3D</h1>
             <p className="lead">
               Prześlij plik STL lub logo, dobierz materiał i poznaj orientacyjny
               koszt wydruku w stylu KarPas. Szybko sprawdzisz, jak wycenić małe
