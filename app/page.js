@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const MATERIALS = {
   pla: {
@@ -115,6 +115,7 @@ const numberFormatter = new Intl.NumberFormat("pl-PL", {
 });
 
 export default function Page() {
+  const [navOpen, setNavOpen] = useState(false);
   const [material, setMaterial] = useState("pla");
   const [inputs, setInputs] = useState({
     width: "50",
@@ -128,6 +129,26 @@ export default function Page() {
   const [fileInfo, setFileInfo] = useState(null);
   const [warning, setWarning] = useState(null);
   const [results, setResults] = useState(null);
+  const currentYear = new Date().getFullYear();
+
+  const toggleNav = useCallback(() => {
+    setNavOpen((prev) => !prev);
+  }, []);
+
+  const closeNav = useCallback(() => {
+    setNavOpen(false);
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setNavOpen(false);
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleInputChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -216,196 +237,304 @@ export default function Page() {
 
   return (
     <>
-      <header className="page-header">
-        <h1>Kalkulator wyceny breloczka 3D</h1>
-        <p>
-          Prześlij plik STL lub logo (PNG, JPG, SVG), podaj wymiary i uzyskaj
-          orientacyjną wycenę wydruku na drukarce 3D.
-        </p>
+      <header className="site-header" id="start">
+        <nav className="top-nav">
+          <a className="brand" href="#start" onClick={closeNav}>
+            KarPas
+          </a>
+          <button
+            className="menu-toggle"
+            type="button"
+            aria-expanded={navOpen}
+            aria-controls="primary-navigation"
+            onClick={toggleNav}
+          >
+            <span className="sr-only">
+              {navOpen ? "Zamknij menu" : "Pokaż menu"}
+            </span>
+            <span className="menu-bar" />
+            <span className="menu-bar" />
+            <span className="menu-bar" />
+          </button>
+          <ul
+            className={`nav-links${navOpen ? " is-open" : ""}`}
+            id="primary-navigation"
+          >
+            <li>
+              <a href="#calculator" onClick={closeNav}>
+                Kalkulator
+              </a>
+            </li>
+            <li>
+              <a href="#materials" onClick={closeNav}>
+                Materiały
+              </a>
+            </li>
+            <li>
+              <a href="#parameters" onClick={closeNav}>
+                Parametry
+              </a>
+            </li>
+            <li>
+              <a href="#quote" onClick={closeNav}>
+                Wycena
+              </a>
+            </li>
+            <li>
+              <a href="#contact" onClick={closeNav}>
+                Kontakt
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <div className="hero">
+          <div className="hero-content">
+            <span className="eyebrow">KarPas • BWolfOffTheRoad • 3DCalc</span>
+            <h1>Kalkulator wyceny breloczka 3D</h1>
+            <p className="lead">
+              Prześlij plik STL lub logo, dobierz materiał i poznaj orientacyjny
+              koszt wydruku w stylu KarPas. Szybko sprawdzisz, jak wycenić małe
+              serie i prototypy.
+            </p>
+            <div className="hero-actions">
+              <a className="btn primary" href="#calculator" onClick={closeNav}>
+                Oblicz wycenę
+              </a>
+              <a className="btn ghost" href="#contact" onClick={closeNav}>
+                Kontakt
+              </a>
+            </div>
+          </div>
+          <div className="hero-card">
+            <div className="hero-card__title">Jak to działa</div>
+            <ul className="hero-card__list">
+              <li>
+                Zlecenia 3D — idealne na krótkie serie i
+                prototypy.
+              </li>
+              <li>
+                Ustalenia robimy bez zbędnej formalności, stawiając na szybkie
+                dopracowanie pomysłu.
+              </li>
+            </ul>
+          </div>
+        </div>
       </header>
 
       <main>
-        <section className="panel">
-          <h2>1. Materiał</h2>
-          <label className="field">
-            <span>Typ materiału</span>
-            <select
-              id="material"
-              value={material}
-              onChange={(event) => setMaterial(event.target.value)}
-            >
-              {materialOptions}
-            </select>
-          </label>
-          <div className="material-meta">
-            <span>
-              <strong>Średnia cena:</strong>{" "}
-              {selectedMaterial.priceRange ??
-                `${selectedMaterial.pricePerGram.toFixed(2)} zł/g`}
-            </span>
-            <span>
-              <strong>Zastosowanie:</strong> {selectedMaterial.usage}
-            </span>
-            <span>
-              <strong>Uwagi:</strong> {selectedMaterial.notes}
-            </span>
+        <section className="section accent" id="calculator">
+          <div className="section-header">
+            <span className="section-eyebrow">Kalkulator</span>
+            <h2>Przelicz wycenę swojego breloczka</h2>
+            <p>
+              Wypełnij kolejne kroki, aby oszacować koszt materiału, czas druku
+              oraz cenę jednostkową. Kalkulator bazuje na praktyce KarPas – możesz
+              łatwo dostosować założenia do własnej drukarni.
+            </p>
           </div>
-          <p className="hint">
-            Ceny zawierają koszt filamentu; uwzględnij później ewentualne
-            wykończenie, malowanie itp.
-          </p>
-        </section>
 
-        <section className="panel">
-          <h2>2. Plik</h2>
-          <label className="field file-field">
-            <span>Plik STL lub logo</span>
-            <input
-              type="file"
-              id="fileInput"
-              accept=".stl,.STL,.svg,.SVG,image/*"
-              onChange={handleFileChange}
-            />
-          </label>
-          <p className="hint">
-            Dla pliku STL objętość zostanie odczytana automatycznie. Dla logo
-            wprowadź wymiary docelowe poniżej.
-          </p>
-          <div
-            id="fileInfo"
-            className={fileInfo ? "info-box" : "info-box hidden"}
-          >
-            {fileInfo}
-          </div>
-          <div
-            id="fileWarning"
-            className={warning ? "warning" : "warning hidden"}
-          >
-            {warning}
-          </div>
-        </section>
-
-        <section className="panel">
-          <h2>3. Wymiary i parametry</h2>
-          <div className="grid">
-            <label className="field">
-              <span>Szerokość [mm]</span>
-              <input
-                type="number"
-                id="widthInput"
-                name="width"
-                min="1"
-                step="0.1"
-                value={inputs.width}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label className="field">
-              <span>Wysokość [mm]</span>
-              <input
-                type="number"
-                id="heightInput"
-                name="height"
-                min="1"
-                step="0.1"
-                value={inputs.height}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label className="field">
-              <span>Grubość [mm]</span>
-              <input
-                type="number"
-                id="thicknessInput"
-                name="thickness"
-                min="1"
-                step="0.1"
-                value={inputs.thickness}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label className="field">
-              <span>Ilość sztuk</span>
-              <input
-                type="number"
-                id="quantityInput"
-                name="quantity"
-                min="1"
-                step="1"
-                value={inputs.quantity}
-                onChange={handleInputChange}
-              />
-            </label>
-            <label className="field">
-              <span>Wypełnienie [%]</span>
-              <select
-                id="infillInput"
-                name="infill"
-                value={inputs.infill}
-                onChange={handleInputChange}
-              >
-                <option value="10">
-                  10% — ekonomiczny, lekkie breloczki
-                </option>
-                <option value="15">15% — standardowy breloczek</option>
-                <option value="20">20% — solidniejsze elementy</option>
-                <option value="30">30% — wysoka sztywność</option>
-              </select>
-            </label>
-          </div>
-          <p className="hint">
-            Zakładamy standardowy breloczek: grubość 3–5 mm i wypełnienie 15%
-            (ustawione domyślnie). Większe wypełnienie zwiększa sztywność oraz
-            koszt materiału i czasu druku. Wpisz ilość sztuk, aby naliczyć rabat
-            ilościowy (cena minimalna 4 zł/szt.).
-          </p>
-        </section>
-
-        <section className="panel">
-          <h2>4. Dodatkowe opcje</h2>
-          <fieldset className="add-ons">
-            {Object.entries(ADD_ONS).map(([value, option]) => (
-              <label key={value} className="add-on">
-                <input
-                  type="checkbox"
-                  value={value}
-                  checked={inputs.addOns.includes(value)}
-                  onChange={handleAddOnToggle}
-                />
-                <div>
-                  <span className="add-on__name">
-                    {option.label} (+{numberFormatter.format(option.price)} zł)
-                  </span>
-                  <span className="add-on__description">{option.description}</span>
-                </div>
+          <div className="panel-stack">
+            <div className="panel" id="materials">
+              <h3>1. Materiał</h3>
+              <label className="field">
+                <span>Typ materiału</span>
+                <select
+                  id="material"
+                  value={material}
+                  onChange={(event) => setMaterial(event.target.value)}
+                >
+                  {materialOptions}
+                </select>
               </label>
-            ))}
-          </fieldset>
-          <p className="hint">
-            Zaznacz opcje dodatkowe, jeżeli wymagają ręcznej pracy lub
-            dodatkowych materiałów. Koszt zostanie doliczony do wyceny.
-          </p>
+              <div className="material-meta">
+                <span>
+                  <strong>Średnia cena:</strong>{" "}
+                  {selectedMaterial.priceRange ??
+                    `${selectedMaterial.pricePerGram.toFixed(2)} zł/g`}
+                </span>
+                <span>
+                  <strong>Zastosowanie:</strong> {selectedMaterial.usage}
+                </span>
+                <span>
+                  <strong>Uwagi:</strong> {selectedMaterial.notes}
+                </span>
+              </div>
+              <p className="hint">
+                Ceny obejmują koszt filamentu. W późniejszych krokach dodasz
+                ręczne wykończenie lub elementy dodatkowe.
+              </p>
+            </div>
+
+            <div className="panel" id="files">
+              <h3>2. Plik</h3>
+              <label className="field file-field">
+                <span>Plik STL lub logo</span>
+                <input
+                  type="file"
+                  id="fileInput"
+                  accept=".stl,.STL,.svg,.SVG,image/*"
+                  onChange={handleFileChange}
+                />
+              </label>
+              <p className="hint">
+                Dla plików STL objętość odczytujemy automatycznie. W przypadku logo
+                uzupełnij docelowe wymiary w kolejnym kroku.
+              </p>
+              <div
+                id="fileInfo"
+                className={fileInfo ? "info-box" : "info-box hidden"}
+              >
+                {fileInfo}
+              </div>
+              <div
+                id="fileWarning"
+                className={warning ? "warning" : "warning hidden"}
+              >
+                {warning}
+              </div>
+            </div>
+
+            <div className="panel" id="parameters">
+              <h3>3. Wymiary i parametry</h3>
+              <div className="grid">
+                <label className="field">
+                  <span>Szerokość [mm]</span>
+                  <input
+                    type="number"
+                    id="widthInput"
+                    name="width"
+                    min="1"
+                    step="0.1"
+                    value={inputs.width}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label className="field">
+                  <span>Wysokość [mm]</span>
+                  <input
+                    type="number"
+                    id="heightInput"
+                    name="height"
+                    min="1"
+                    step="0.1"
+                    value={inputs.height}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label className="field">
+                  <span>Grubość [mm]</span>
+                  <input
+                    type="number"
+                    id="thicknessInput"
+                    name="thickness"
+                    min="1"
+                    step="0.1"
+                    value={inputs.thickness}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label className="field">
+                  <span>Ilość sztuk</span>
+                  <input
+                    type="number"
+                    id="quantityInput"
+                    name="quantity"
+                    min="1"
+                    step="1"
+                    value={inputs.quantity}
+                    onChange={handleInputChange}
+                  />
+                </label>
+                <label className="field">
+                  <span>Wypełnienie [%]</span>
+                  <select
+                    id="infillInput"
+                    name="infill"
+                    value={inputs.infill}
+                    onChange={handleInputChange}
+                  >
+                    <option value="10">
+                      10% — ekonomiczny wariant dla lekkich breloczków
+                    </option>
+                    <option value="15">15% — domyślna równowaga</option>
+                    <option value="20">20% — większa sztywność</option>
+                    <option value="30">30% — solidne elementy</option>
+                  </select>
+                </label>
+              </div>
+              <p className="hint">
+                Standardowy breloczek ma 3–5 mm grubości i 15% wypełnienia. Większy
+                infill zwiększa sztywność, ale też czas i koszt druku. Ilość sztuk
+                nalicza automatyczny rabat (minimum 4 zł/szt.).
+              </p>
+            </div>
+
+            <div className="panel" id="add-ons">
+              <h3>4. Dodatkowe opcje</h3>
+              <fieldset className="add-ons">
+                {Object.entries(ADD_ONS).map(([value, option]) => (
+                  <label key={value} className="add-on">
+                    <input
+                      type="checkbox"
+                      value={value}
+                      checked={inputs.addOns.includes(value)}
+                      onChange={handleAddOnToggle}
+                    />
+                    <div>
+                      <span className="add-on__name">
+                        {option.label} (+{numberFormatter.format(option.price)} zł)
+                      </span>
+                      <span className="add-on__description">
+                        {option.description}
+                      </span>
+                    </div>
+                  </label>
+                ))}
+              </fieldset>
+              <p className="hint">
+                Wybierz opcje wymagające dodatkowej pracy ręcznej albo materiałów.
+                Koszt zostanie doliczony do każdej sztuki.
+              </p>
+            </div>
+
+            <div className="panel" id="quote">
+              <h3>5. Wycena</h3>
+              <button
+                id="estimateButton"
+                className="btn primary"
+                type="button"
+                onClick={handleEstimate}
+              >
+                Oblicz orientacyjny koszt
+              </button>
+              <EstimationResults results={results} />
+            </div>
+          </div>
         </section>
 
-        <section className="panel">
-          <h2>5. Wycena</h2>
-          <button
-            id="estimateButton"
-            className="primary"
-            type="button"
-            onClick={handleEstimate}
-          >
-            Oblicz orientacyjny koszt
-          </button>
-          <EstimationResults results={results} />
+        <section className="section" id="contact">
+          <div className="contact-card">
+            <div className="contact-info">
+              <h3>KarPas & BWolfOffTheRoad</h3>
+              <a className="contact-link" href="mailto:druk3d@bwolfofftheroad.eu">
+                druk3d@bwolfofftheroad.eu
+              </a>
+            </div>
+            <div className="contact-cta">
+              <p className="contact-highlight">
+                Masz większy projekt lub chcesz porozmawiać o prototypie?
+              </p>
+              <a className="btn primary" href="mailto:druk3d@bwolfofftheroad.eu">
+                Napisz do nas
+              </a>
+            </div>
+          </div>
         </section>
       </main>
 
-      <footer className="page-footer">
-        <small>
-          Kalkulator demonstracyjny — dopasuj parametry kosztowe do swojej
-          drukarni 3D.
-        </small>
+      <footer className="site-footer">
+        <p>© {currentYear} KarPas & BWolfOffTheRoad. Wszystkie prawa zastrzeżone.</p>
       </footer>
     </>
   );
