@@ -290,7 +290,7 @@ export default function Page() {
 
         <div className="hero">
           <div className="hero-content">
-            <span className="eyebrow">KarPas • BWolfOffTheRoad • 3DCalc</span>
+            <span className="eyebrow">KarPas • 3DCalc</span>
             <h1>Kalkulator wyceny druku 3D</h1>
             <p className="lead">
               Prześlij plik STL lub logo, dobierz materiał i poznaj orientacyjny
@@ -516,16 +516,16 @@ export default function Page() {
         <section className="section" id="contact">
           <div className="contact-card">
             <div className="contact-info">
-              <h3>KarPas & BWolfOffTheRoad</h3>
-              <a className="contact-link" href="mailto:druk3d@bwolfofftheroad.eu">
-                druk3d@bwolfofftheroad.eu
+              <h3>KarPas</h3>
+              <a className="contact-link" href="mailto:apps@karpas.pl">
+                apps@karpas.pl
               </a>
             </div>
             <div className="contact-cta">
               <p className="contact-highlight">
                 Masz większy projekt lub chcesz porozmawiać o prototypie?
               </p>
-              <a className="btn primary" href="mailto:druk3d@bwolfofftheroad.eu">
+              <a className="btn primary" href="mailto:apps@karpas.pl">
                 Napisz do nas
               </a>
             </div>
@@ -534,7 +534,7 @@ export default function Page() {
       </main>
 
       <footer className="site-footer">
-        <p>© {currentYear} KarPas & BWolfOffTheRoad. Wszystkie prawa zastrzeżone.</p>
+        <p>© {currentYear} KarPas. Wszystkie prawa zastrzeżone.</p>
       </footer>
     </>
   );
