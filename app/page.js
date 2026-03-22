@@ -129,6 +129,7 @@ export default function Page() {
   const [fileInfo, setFileInfo] = useState(null);
   const [warning, setWarning] = useState(null);
   const [results, setResults] = useState(null);
+  const [parsing, setParsing] = useState(false);
   const currentYear = new Date().getFullYear();
 
   const toggleNav = useCallback(() => {
@@ -168,6 +169,8 @@ export default function Page() {
     });
   }, []);
 
+  const MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024; // 50 MB
+
   const handleFileChange = useCallback(async (event) => {
     const file = event.target.files?.[0];
     setModelData(null);
@@ -179,7 +182,13 @@ export default function Page() {
       return;
     }
 
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      setWarning("Plik jest zbyt duży. Maksymalny rozmiar to 50 MB.");
+      return;
+    }
+
     if (isStlFile(file)) {
+      setParsing(true);
       try {
         const parsedModel = await parseStlFile(file);
         setModelData(parsedModel);
@@ -201,6 +210,8 @@ export default function Page() {
         setWarning(
           "Nie udało się odczytać modelu STL. Upewnij się, że plik jest poprawny."
         );
+      } finally {
+        setParsing(false);
       }
     } else {
       setFileInfo(
@@ -375,8 +386,12 @@ export default function Page() {
                   id="fileInput"
                   accept=".stl,.STL,.svg,.SVG,image/*"
                   onChange={handleFileChange}
+                  disabled={parsing}
                 />
               </label>
+              {parsing && (
+                <p className="hint">Wczytuję plik STL…</p>
+              )}
               <p className="hint">
                 Dla plików STL objętość odczytujemy automatycznie. W przypadku logo
                 uzupełnij docelowe wymiary w kolejnym kroku.

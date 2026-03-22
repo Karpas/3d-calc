@@ -6,7 +6,6 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "export": "next export",
     "lint": "next lint",
     "deploy": "node -e \"console.log('Cloudflare Pages serves the static out/ directory; no extra deploy step needed.')\""
   },
