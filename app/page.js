@@ -573,9 +573,9 @@ function EstimationResults({ results }) {
       <h3>Szacunkowe parametry wydruku</h3>
       <ul>
         <li>
-          <strong>Objętość bryły:</strong>{" "}
+          <strong>Objętość efektywna:</strong>{" "}
           <span>
-            {numberFormatter.format(effectiveVolumeCm3)} cm³ (geometry:{" "}
+            {numberFormatter.format(effectiveVolumeCm3)} cm³ (geometryczna:{" "}
             {numberFormatter.format(baseVolumeCm3)} cm³)
           </span>
         </li>
