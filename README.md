@@ -1,38 +1,41 @@
-# Kalkulator wyceny breloczka 3D (Next.js)
+# 3D Print Price Calculator (Next.js)
 
-Kalkulator pozwalający oszacować koszt wydruku breloczka na drukarce 3D. Aplikacja działa jako projekt Next.js (App Router) i wykonuje całą logikę po stronie klienta.
+A client-side calculator for estimating the cost of 3D-printed keychains and small parts. Built with Next.js App Router — all logic runs in the browser, no backend required.
 
-## Funkcje
+## Features
 
-- wgrywanie pliku STL z automatycznym obliczaniem objętości modelu (obsługa binarnego oraz ASCII STL),
-- obsługa obrazów/logo (PNG, JPG, SVG) z ręcznym podaniem wymiarów breloczka,
-- konfiguracja parametrów druku: materiał (PLA, PLA+, PETG, ABS, ASA, TPU, Nylon, CF-mieszanki, PC, PA-CF/PA-GF), wypełnienie (predefiniowane warianty), grubość,
-- możliwość doliczenia dodatków takich jak zatopienie tagu NFC, pokrycie żywicą lub dołączenie łańcuszka,
-- uwzględnianie liczby sztuk wraz z automatycznym rabatem ilościowym (5% ≥ 30 szt., 7% ≥ 50 szt., 10% ≥ 100 szt., 20% ≥ 200 szt., 28% ≥ 400 szt., 32% ≥ 600 szt., 40% ≥ 1000 szt., min. 4 zł/szt.),
-- szacowanie objętości, zużycia filamentu, czasu pracy maszyny oraz łącznego kosztu (materiał + czas + opłata startowa + dodatki).
+- **STL file upload** — automatically parses volume from binary and ASCII STL files
+- **Image/logo support** — PNG, JPG, SVG with manual keychain dimensions
+- **Material selection** — PLA, PLA+, PETG, ABS, ASA, TPU, Nylon, CF blends, PC, PA-CF/PA-GF
+- **Print parameters** — infill presets and wall thickness
+- **Add-ons** — NFC tag embedding, resin coating, keychain ring
+- **Quantity pricing** — bulk discounts (5% >= 30 pcs, 7% >= 50, 10% >= 100, 20% >= 200, 28% >= 400, 32% >= 600, 40% >= 1000; min. 4 PLN/pc)
+- **Cost breakdown** — material, machine time, setup fee, and add-ons
 
-## Uruchomienie
-
-> Uwaga: instalacja zależności wymaga dostępu do npm/yarn.
+## Getting Started
 
 ```bash
 npm install
 npm run dev
 ```
 
-Następnie otwórz w przeglądarce `http://localhost:3000`.
+Open `http://localhost:3000` in your browser.
 
-## Założenia i uproszczenia
+## Assumptions & Simplifications
 
-- Jednostki modeli STL traktowane są jako milimetry.
-- 35% objętości odpowiada perymetrom, pozostała część jest skalowana współczynnikiem wypełnienia.
-- Prędkość druku przyjęto na poziomie 12 000 mm³/h, stawka maszyny to 12 zł/h, a opłata przygotowawcza (weryfikacja grafiki i przygotowanie projektu) wynosi 20 zł i jest liczona jednorazowo na zamówienie.
-- Rabat ilościowy dotyczy kosztu jednostkowego (materiał + czas + dodatki); opłata startowa pozostaje bez zmian.
-- Cena jednostkowa jest ograniczona od dołu do 4 zł, aby zachować minimalną marżę przy dużych nakładach.
-- Algorytm ma charakter orientacyjny i powinien zostać dostosowany do realnych kosztów konkretnej drukarni.
+- STL units are treated as millimetres.
+- 35% of volume is allocated to perimeters; the rest is scaled by the infill factor.
+- Print speed: 12 000 mm³/h. Machine rate: 12 PLN/h. One-time setup fee (file prep & review): 20 PLN per order.
+- Bulk discounts apply to the per-unit cost (material + time + add-ons); the setup fee is always fixed.
+- Unit price is floored at 4 PLN to preserve a minimum margin at high volumes.
+- The algorithm is an approximation and should be calibrated to actual costs for a specific print shop.
 
-## Dalszy rozwój
+## Roadmap
 
-- Walidacja poprawności siatki STL (np. wykrywanie modeli niezamkniętych).
-- Wizualizacja podglądu STL (np. z wykorzystaniem Three.js).
-- Eksport arkusza PDF lub wysyłka podsumowania mailem.
+- STL mesh validation (e.g. non-manifold detection).
+- STL preview renderer (e.g. Three.js).
+- PDF export or email summary.
+
+## Contact
+
+[apps@karpas.pl](mailto:apps@karpas.pl)
