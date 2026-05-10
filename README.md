@@ -5,6 +5,8 @@ A client-side calculator for estimating the cost of 3D-printed keychains and sma
 ## Features
 
 - **STL file upload** — automatically parses volume from binary and ASCII STL files
+- **Interactive STL preview** — renders uploaded STL files in a Three.js viewer with mouse rotation
+- **Deferred pricing preview** — shows unit and total price only after upload or manual calculation
 - **Image/logo support** — PNG, JPG, SVG with manual keychain dimensions
 - **Material selection** — PLA, PLA+, PETG, ABS, ASA, TPU, Nylon, CF blends, PC, PA-CF/PA-GF
 - **Print parameters** — infill presets and wall thickness
@@ -33,9 +35,8 @@ Open `http://localhost:3000` in your browser.
 ## Roadmap
 
 - STL mesh validation (e.g. non-manifold detection).
-- STL preview renderer (e.g. Three.js).
 - PDF export or email summary.
 
 ## Contact
 
-[apps@karpas.pl](mailto:apps@karpas.pl)
+[app@karpas.pl](mailto:app@karpas.pl)
